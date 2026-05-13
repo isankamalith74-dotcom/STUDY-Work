@@ -1,0 +1,2339 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#0a0a1a">
+    <title>NEXORA X — AI Creative Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+Sinhala:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d4ff;
+            --secondary: #7c3aed;
+            --accent: #f472b6;
+            --bg: #0a0a1a;
+            --surface: rgba(255,255,255,0.03);
+            --border: rgba(99,102,241,0.15);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'Poppins', 'Noto Sans Sinhala', sans-serif; 
+            background: var(--bg); 
+            color: #e0e0ff; 
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Background */
+        .bg-animation { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; 
+            background: linear-gradient(-45deg, #0a0a1a, #12122e, #0d1b3e, #0a0f2e, #0d0d2b); 
+            background-size: 400% 400%; 
+            animation: gradientBG 20s ease infinite; 
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        .particle { 
+            position: absolute; width: 3px; height: 3px; 
+            background: rgba(0,212,255,0.5); border-radius: 50%; 
+            animation: float 20s infinite linear; 
+            box-shadow: 0 0 10px rgba(0,212,255,0.4);
+        }
+        @keyframes float { 
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; } 
+            10% { opacity: 1; } 
+            90% { opacity: 1; } 
+            100% { transform: translateY(-10vh) translateX(100px); opacity: 0; } 
+        }
+
+        /* Header */
+        .glass-header { 
+            background: rgba(10,10,26,0.9); 
+            backdrop-filter: blur(20px); 
+            border-bottom: 1px solid var(--border); 
+        }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .neon-text { 
+            background: linear-gradient(90deg, #00d4ff, #7c3aed, #f472b6, #00d4ff); 
+            background-size: 300% 300%; 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            animation: neonShift 4s ease infinite; 
+        }
+        @keyframes neonShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+        /* Glow Button */
+        .glow-btn { 
+            background: linear-gradient(135deg, #00d4ff, #7c3aed); 
+            box-shadow: 0 0 20px rgba(0,212,255,0.3); 
+            transition: all 0.3s ease; 
+            border: none; color: white; cursor: pointer;
+            font-weight: 600; border-radius: 14px;
+        }
+        .glow-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 0 30px rgba(0,212,255,0.5), 0 0 60px rgba(124,58,237,0.3); 
+        }
+        .glow-btn:active { transform: translateY(0) scale(0.97); }
+        .glow-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* Card Base */
+        .card-base {
+            background: linear-gradient(145deg, rgba(18,18,46,0.95), rgba(10,10,26,0.95));
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        .card-base:hover {
+            border-color: rgba(0,212,255,0.4);
+            box-shadow: 0 10px 30px rgba(0,212,255,0.08);
+        }
+
+        /* Neon Input */
+        .neon-input { 
+            background: rgba(255,255,255,0.05); 
+            border: 2px solid rgba(99,102,241,0.2); 
+            color: #e0e0ff; 
+            transition: all 0.3s ease; 
+            border-radius: 14px;
+            font-size: 16px;
+            width: 100%;
+            padding: 14px 16px;
+        }
+        .neon-input:focus { 
+            border-color: #00d4ff; 
+            box-shadow: 0 0 20px rgba(0,212,255,0.2); 
+            outline: none; 
+        }
+        .neon-input::placeholder { color: rgba(224,224,255,0.3); }
+
+        /* Category Navigation - MOBILE FIRST */
+        .category-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0 4px;
+        }
+        .category-group {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(99,102,241,0.1);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .category-group:hover {
+            border-color: rgba(99,102,241,0.25);
+        }
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .category-header:active {
+            background: rgba(0,212,255,0.05);
+        }
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .category-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: white;
+            flex: 1;
+        }
+        .category-arrow {
+            color: rgba(224,224,255,0.3);
+            transition: transform 0.3s ease;
+            font-size: 12px;
+        }
+        .category-group.expanded .category-arrow {
+            transform: rotate(180deg);
+        }
+        .category-items {
+            display: none;
+            padding: 0 16px 12px 68px;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .category-group.expanded .category-items {
+            display: flex;
+        }
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: rgba(224,224,255,0.6);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .category-item:hover {
+            background: rgba(0,212,255,0.08);
+            color: #00d4ff;
+        }
+        .category-item.active {
+            background: rgba(0,212,255,0.12);
+            color: #00d4ff;
+            border: 1px solid rgba(0,212,255,0.3);
+        }
+        .category-item i {
+            font-size: 14px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Content Area */
+        .content-area {
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title i {
+            font-size: 18px;
+        }
+
+        /* Voice Options */
+        .voice-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        @media (min-width: 640px) {
+            .voice-grid { grid-template-columns: 1fr 1fr; }
+        }
+        .voice-option { 
+            background: rgba(255,255,255,0.03); 
+            border: 2px solid rgba(99,102,241,0.15); 
+            border-radius: 14px; 
+            padding: 14px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+        }
+        .voice-option:hover { 
+            border-color: rgba(99,102,241,0.4); 
+            background: rgba(99,102,241,0.08); 
+        }
+        .voice-option.selected { 
+            border-color: #00d4ff; 
+            background: rgba(0,212,255,0.1); 
+            box-shadow: 0 0 20px rgba(0,212,255,0.1); 
+        }
+        .voice-option .voice-icon { 
+            width: 44px; height: 44px; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 20px; 
+            flex-shrink: 0;
+        }
+
+        /* Effect Buttons */
+        .effect-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        @media (min-width: 480px) {
+            .effect-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (min-width: 640px) {
+            .effect-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        .effect-btn { 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(99,102,241,0.2); 
+            border-radius: 12px; 
+            padding: 12px; 
+            color: #e0e0ff; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .effect-btn:hover { 
+            border-color: rgba(0,212,255,0.5); 
+            background: rgba(0,212,255,0.1); 
+        }
+        .effect-btn.active { 
+            border-color: #00d4ff; 
+            background: rgba(0,212,255,0.15); 
+            color: #00d4ff; 
+            box-shadow: 0 0 15px rgba(0,212,255,0.2);
+        }
+
+        /* Slider */
+        .neon-slider { 
+            -webkit-appearance: none; appearance: none; 
+            width: 100%; height: 8px; 
+            border-radius: 4px; 
+            background: rgba(99,102,241,0.2); 
+            outline: none; 
+        }
+        .neon-slider::-webkit-slider-thumb { 
+            -webkit-appearance: none; appearance: none; 
+            width: 24px; height: 24px; 
+            border-radius: 50%; 
+            background: linear-gradient(135deg, #00d4ff, #7c3aed); 
+            cursor: pointer; 
+            box-shadow: 0 0 15px rgba(0,212,255,0.6); 
+        }
+        .neon-slider::-moz-range-thumb { 
+            width: 24px; height: 24px; border-radius: 50%; 
+            background: linear-gradient(135deg, #00d4ff, #7c3aed); 
+            cursor: pointer; border: none; 
+            box-shadow: 0 0 15px rgba(0,212,255,0.6); 
+        }
+
+        /* Waveform */
+        .waveform-container { 
+            background: rgba(0,0,0,0.3); 
+            border-radius: 16px; 
+            padding: 16px; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        .waveform-canvas { width: 100%; height: 100px; }
+
+        /* Audio Player */
+        .audio-player { 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(99,102,241,0.15); 
+            border-radius: 16px; 
+            padding: 14px; 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+        }
+        .play-btn { 
+            width: 48px; height: 48px; 
+            border-radius: 50%; 
+            background: linear-gradient(135deg, #00d4ff, #7c3aed); 
+            border: none; color: white; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: all 0.3s; 
+            box-shadow: 0 0 20px rgba(0,212,255,0.4); 
+            flex-shrink: 0;
+        }
+        .play-btn:active { transform: scale(0.92); }
+
+        /* Logo Styles */
+        .style-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        @media (min-width: 640px) {
+            .style-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        .logo-style-card { 
+            background: rgba(255,255,255,0.03); 
+            border: 2px solid rgba(99,102,241,0.15); 
+            border-radius: 16px; 
+            padding: 16px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            text-align: center; 
+        }
+        .logo-style-card:hover { 
+            border-color: rgba(0,212,255,0.4); 
+            background: rgba(0,212,255,0.05); 
+            transform: translateY(-3px); 
+        }
+        .logo-style-card.selected { 
+            border-color: #00d4ff; 
+            background: rgba(0,212,255,0.1); 
+            box-shadow: 0 0 25px rgba(0,212,255,0.15); 
+        }
+        .logo-style-card .style-icon { 
+            width: 52px; height: 52px; 
+            border-radius: 14px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin: 0 auto 10px; 
+            font-size: 24px; 
+        }
+
+        /* Prompt Tags */
+        .prompt-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+        @media (min-width: 480px) {
+            .prompt-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        @media (min-width: 640px) {
+            .prompt-grid { grid-template-columns: repeat(6, 1fr); }
+        }
+        .prompt-tag { 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px; 
+            padding: 8px; 
+            border-radius: 10px; 
+            font-size: 12px; 
+            background: rgba(0,212,255,0.1); 
+            color: #00d4ff; 
+            border: 1px solid rgba(0,212,255,0.2); 
+            cursor: pointer; 
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .prompt-tag:hover { background: rgba(0,212,255,0.2); transform: scale(1.05); }
+        .prompt-tag:active { transform: scale(0.95); }
+
+        /* Logo Preview */
+        .logo-preview-container { 
+            background: rgba(0,0,0,0.4); 
+            border-radius: 20px; 
+            padding: 20px; 
+            min-height: 250px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        .logo-preview-container.loading::before { 
+            content: ''; 
+            position: absolute; 
+            width: 50px; height: 50px; 
+            border: 4px solid rgba(0,212,255,0.2); 
+            border-top-color: #00d4ff; 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite; 
+            z-index: 10; 
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Gallery */
+        .logo-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        @media (min-width: 640px) {
+            .logo-gallery { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (min-width: 1024px) {
+            .logo-gallery { grid-template-columns: repeat(4, 1fr); }
+        }
+        .logo-result-card { 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(99,102,241,0.2); 
+            border-radius: 16px; 
+            overflow: hidden; 
+            transition: all 0.3s ease; 
+        }
+        .logo-result-card:hover { 
+            border-color: rgba(0,212,255,0.4); 
+            box-shadow: 0 10px 30px rgba(0,212,255,0.1); 
+        }
+        .logo-result-card img { width: 100%; height: 140px; object-fit: cover; }
+
+        /* Limit Badge */
+        .limit-badge { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px; 
+            padding: 6px 14px; 
+            border-radius: 20px; 
+            font-size: 13px; 
+            font-weight: 600; 
+        }
+        .limit-ok { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+        .limit-warning { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+        .limit-danger { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+
+        /* History Item */
+        .history-item { 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(99,102,241,0.1); 
+            border-radius: 14px; 
+            padding: 12px 14px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            transition: all 0.3s; 
+            cursor: pointer; 
+        }
+        .history-item:hover { 
+            background: rgba(99,102,241,0.08); 
+            border-color: rgba(99,102,241,0.3); 
+        }
+
+        /* Toast */
+        .toast { 
+            position: fixed; top: 16px; left: 16px; right: 16px;
+            background: linear-gradient(135deg, rgba(16,185,129,0.95), rgba(5,150,105,0.95)); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(16,185,129,0.3); 
+            border-radius: 16px; 
+            padding: 14px 20px; 
+            color: white; 
+            font-weight: 500; 
+            z-index: 9999; 
+            animation: toastSlide 0.4s ease; 
+            box-shadow: 0 10px 30px rgba(16,185,129,0.3); 
+            text-align: center;
+        }
+        .toast-error { 
+            background: linear-gradient(135deg, rgba(239,68,68,0.95), rgba(220,38,38,0.95)) !important; 
+            box-shadow: 0 10px 30px rgba(239,68,68,0.3) !important; 
+        }
+        .toast-info { 
+            background: linear-gradient(135deg, rgba(59,130,246,0.95), rgba(37,99,235,0.95)) !important; 
+            box-shadow: 0 10px 30px rgba(59,130,246,0.3) !important; 
+        }
+        .toast-warning { 
+            background: linear-gradient(135deg, rgba(245,158,11,0.95), rgba(217,119,6,0.95)) !important; 
+            box-shadow: 0 10px 30px rgba(245,158,11,0.3) !important; 
+        }
+        @keyframes toastSlide { 
+            from { opacity: 0; transform: translateY(-30px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        /* Dropdown */
+        .dropdown { 
+            background: rgba(255,255,255,0.05); 
+            border: 2px solid rgba(99,102,241,0.2); 
+            border-radius: 12px; 
+            padding: 12px 14px; 
+            color: #e0e0ff; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            font-size: 15px; 
+            width: 100%;
+        }
+        .dropdown:focus { 
+            border-color: #00d4ff; 
+            box-shadow: 0 0 20px rgba(0,212,255,0.2); 
+            outline: none; 
+        }
+
+        /* Feature Tags */
+        .feature-tag { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 5px; 
+            padding: 6px 12px; 
+            border-radius: 10px; 
+            font-size: 12px; 
+            font-weight: 600; 
+            background: rgba(124,58,237,0.15); 
+            color: #a78bfa; 
+            border: 1px solid rgba(124,58,237,0.2); 
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(10,10,26,0.5); }
+        ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 3px; }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeInUp 0.5s ease forwards; }
+
+        /* Mobile Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10,10,26,0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(99,102,241,0.15);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 100;
+        }
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            color: rgba(224,224,255,0.4);
+            font-size: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+        }
+        .bottom-nav-item i {
+            font-size: 20px;
+        }
+        .bottom-nav-item.active {
+            color: #00d4ff;
+        }
+        .bottom-nav-item:active {
+            transform: scale(0.9);
+        }
+
+        /* Hide bottom nav on desktop */
+        @media (min-width: 1024px) {
+            .bottom-nav { display: none; }
+            .main-layout {
+                display: grid;
+                grid-template-columns: 300px 1fr;
+                gap: 24px;
+            }
+            .sidebar {
+                position: sticky;
+                top: 80px;
+                height: calc(100vh - 100px);
+                overflow-y: auto;
+            }
+        }
+
+        /* Mobile: hide sidebar, show bottom nav */
+        @media (max-width: 1023px) {
+            .sidebar { display: none; }
+            .content-area { padding-bottom: 80px; }
+        }
+
+        /* Equalizer */
+        @keyframes equalizer { 0%, 100% { height: 20%; } 50% { height: 100%; } }
+        .equalizer-bar { 
+            width: 4px; 
+            background: linear-gradient(to top, #00d4ff, #7c3aed); 
+            border-radius: 2px; 
+            animation: equalizer 0.5s ease infinite; 
+        }
+
+        /* Status badges */
+        .status-badge { 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            font-weight: 600; 
+        }
+        .status-pending { background: rgba(245,158,11,0.2); color: #fbbf24; }
+        .status-processing { background: rgba(0,212,255,0.2); color: #22d3ee; }
+        .status-completed { background: rgba(16,185,129,0.2); color: #34d399; }
+        .status-failed { background: rgba(239,68,68,0.2); color: #f87171; }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="particles" id="particles"></div>
+    <div id="toastContainer"></div>
+
+    <!-- HEADER -->
+    <header class="glass-header fixed top-0 left-0 w-full z-50 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                    <i class="fas fa-robot text-white text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-black font-orbitron text-white tracking-wide">NEXORA X</h1>
+                    <p class="text-[10px] text-cyan-300/60 font-medium">AI Creative Studio</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div id="limitIndicator" class="limit-badge limit-ok hidden text-xs">
+                    <i class="fas fa-coins"></i>
+                    <span id="limitText">5/5</span>
+                </div>
+                <button onclick="showHelp()" class="text-cyan-400/60 hover:text-cyan-400 transition p-2 rounded-xl hover:bg-white/5 active:scale-95">
+                    <i class="fas fa-question-circle text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN LAYOUT -->
+    <div class="pt-16 max-w-7xl mx-auto px-3 md:px-4 main-layout">
+
+        <!-- SIDEBAR (Desktop) / CATEGORY NAV -->
+        <aside class="sidebar">
+            <div class="category-nav" id="categoryNav">
+                <!-- Populated by JS -->
+            </div>
+        </aside>
+
+        <!-- CONTENT AREA -->
+        <main class="content-area py-4 md:py-6" id="mainContent">
+
+            <!-- Hero -->
+            <div class="text-center mb-6 md:mb-8 animate-in">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-3">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span class="text-xs text-cyan-200/70 font-medium">AI Powered Studio</span>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-black font-orbitron neon-text mb-2 leading-tight">AI Studio</h2>
+                <p class="text-cyan-200/60 text-sm md:text-base max-w-xl mx-auto px-4">
+                    Voice, Logos & Tools. <span class="font-sinhala">සිංහල, தமிழ், English</span>
+                </p>
+                <div class="flex justify-center gap-2 mt-4 flex-wrap">
+                    <span class="feature-tag"><i class="fas fa-bolt text-[10px]"></i> Voice</span>
+                    <span class="feature-tag"><i class="fas fa-palette text-[10px]"></i> Logos</span>
+                    <span class="feature-tag"><i class="fas fa-link text-[10px]"></i> Shortener</span>
+                    <span class="feature-tag"><i class="fas fa-mobile-alt text-[10px]"></i> Mobile</span>
+                </div>
+            </div>
+
+            <!-- DYNAMIC CONTENT -->
+            <div id="dynamicContent">
+                <!-- Content loaded by JS based on category selection -->
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="bottom-nav-item active" onclick="selectCategory('voice')" data-category="voice">
+            <i class="fas fa-microphone"></i>
+            <span>Voice</span>
+        </button>
+        <button class="bottom-nav-item" onclick="selectCategory('logo')" data-category="logo">
+            <i class="fas fa-palette"></i>
+            <span>Logo</span>
+        </button>
+        <button class="bottom-nav-item" onclick="selectCategory('tools')" data-category="tools">
+            <i class="fas fa-toolbox"></i>
+            <span>Tools</span>
+        </button>
+        <button class="bottom-nav-item" onclick="selectCategory('history')" data-category="history">
+            <i class="fas fa-history"></i>
+            <span>History</span>
+        </button>
+        <button class="bottom-nav-item" onclick="selectCategory('settings')" data-category="settings">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </button>
+    </nav>
+
+    <script>
+        // ==================== CONSTANTS ====================
+        const TINYURL_API_KEY = 'BVdFgUkgMtKE4DUxDY4n2kfk2o2jFqUXprMTULUwEbR1VtdkFx2Y2cH2RdmR';
+        const TINYURL_API_URL = 'https://api.tinyurl.com/create';
+
+        // ==================== STATE ====================
+        let synth = window.speechSynthesis;
+        let voices = [];
+        let currentVoice = null;
+        let utterance = null;
+        let isPlaying = false;
+        let isPaused = false;
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let animationId = null;
+        let currentEffects = new Set();
+        let generationHistory = JSON.parse(localStorage.getItem('nexora_voice_history') || '[]');
+        let settings = JSON.parse(localStorage.getItem('nexora_voice_settings') || '{}');
+
+        // Logo State
+        const LOGO_API_KEY = 'tgp_v1_HppWf7ufOP37y4XGuGzM-7JORkWDuXSeNuOszVDTP6k';
+        const DAILY_LIMIT = 5;
+        let logoHistory = JSON.parse(localStorage.getItem('nexora_logo_history') || '[]');
+        let logoUsage = JSON.parse(localStorage.getItem('nexora_logo_usage') || '{"daily": 0, "total": 0, "lastDate": ""}');
+        let currentLogoUrl = null;
+        let selectedStyle = 'modern';
+        let isGenerating = false;
+        let currentCategory = 'voice';
+        let currentSubItem = 'speak';
+
+        const defaultSettings = { rate: 1.0, pitch: 1.0, volume: 1.0, autoDownload: false, sampleRate: 44100, format: 'mp3', bitrate: 192 };
+        settings = { ...defaultSettings, ...settings };
+
+        // Category Definitions
+        const categories = {
+            voice: {
+                icon: 'fa-microphone',
+                color: 'from-cyan-400 to-blue-500',
+                title: 'Voice Studio',
+                items: [
+                    { id: 'speak', icon: 'fa-play', label: 'Text to Speech' },
+                    { id: 'voices', icon: 'fa-user-voice', label: 'Voice Selection' },
+                    { id: 'effects', icon: 'fa-magic', label: 'Voice Effects' },
+                    { id: 'settings', icon: 'fa-sliders-h', label: 'Voice Settings' },
+                    { id: 'batch', icon: 'fa-layer-group', label: 'Batch Process' }
+                ]
+            },
+            logo: {
+                icon: 'fa-palette',
+                color: 'from-purple-400 to-pink-500',
+                title: 'AI Logo Maker',
+                items: [
+                    { id: 'generate', icon: 'fa-wand-magic-sparkles', label: 'Generate Logo' },
+                    { id: 'gallery', icon: 'fa-images', label: 'My Logos' },
+                    { id: 'styles', icon: 'fa-paint-brush', label: 'Style Guide' }
+                ]
+            },
+            tools: {
+                icon: 'fa-toolbox',
+                color: 'from-yellow-400 to-orange-500',
+                title: 'Tools',
+                items: [
+                    { id: 'shortener', icon: 'fa-link', label: 'Link Shortener' },
+                    { id: 'language', icon: 'fa-language', label: 'Language Detect' },
+                    { id: 'converter', icon: 'fa-exchange-alt', label: 'Text Tools' },
+                    { id: 'recorder', icon: 'fa-circle', label: 'Audio Recorder' }
+                ]
+            },
+            history: {
+                icon: 'fa-history',
+                color: 'from-green-400 to-emerald-500',
+                title: 'History',
+                items: [
+                    { id: 'voice-history', icon: 'fa-microphone', label: 'Voice History' },
+                    { id: 'logo-history', icon: 'fa-palette', label: 'Logo History' }
+                ]
+            },
+            settings: {
+                icon: 'fa-cog',
+                color: 'from-gray-400 to-slate-500',
+                title: 'Settings',
+                items: [
+                    { id: 'general', icon: 'fa-cog', label: 'General' },
+                    { id: 'audio', icon: 'fa-volume-up', label: 'Audio Quality' },
+                    { id: 'about', icon: 'fa-info-circle', label: 'About' }
+                ]
+            }
+        };
+
+        // ==================== INIT ====================
+        function init() {
+            initParticles();
+            loadVoices();
+            renderCategoryNav();
+            selectCategory('voice');
+            initLogoSystem();
+
+            // Touch feedback
+            document.querySelectorAll('button, .voice-option, .logo-style-card').forEach(el => {
+                el.addEventListener('touchstart', function() { this.style.transform = 'scale(0.97)'; }, {passive: true});
+                el.addEventListener('touchend', function() { this.style.transform = ''; }, {passive: true});
+            });
+        }
+
+        // ==================== PARTICLES ====================
+        function initParticles() {
+            const container = document.getElementById('particles');
+            const count = window.innerWidth < 768 ? 25 : 45;
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 15) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // ==================== TOAST ====================
+        function showToast(message, type) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast' + (type === 'error' ? ' toast-error' : type === 'info' ? ' toast-info' : type === 'warning' ? ' toast-warning' : '');
+            const icon = type === 'error' ? 'exclamation-circle' : type === 'info' ? 'info-circle' : type === 'warning' ? 'exclamation-triangle' : 'check-circle';
+            toast.innerHTML = '<i class="fas fa-' + icon + ' mr-2"></i>' + message;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(-30px)'; setTimeout(() => toast.remove(), 400); }, 3500);
+        }
+
+        // ==================== CATEGORY NAVIGATION ====================
+        function renderCategoryNav() {
+            const nav = document.getElementById('categoryNav');
+            nav.innerHTML = Object.entries(categories).map(([key, cat]) => `
+                <div class="category-group ${key === currentCategory ? 'expanded' : ''}" data-category="${key}">
+                    <div class="category-header" onclick="toggleCategory('${key}')">
+                        <div class="category-icon bg-gradient-to-br ${cat.color}">
+                            <i class="fas ${cat.icon} text-white"></i>
+                        </div>
+                        <span class="category-title">${cat.title}</span>
+                        <i class="fas fa-chevron-down category-arrow"></i>
+                    </div>
+                    <div class="category-items">
+                        ${cat.items.map(item => `
+                            <div class="category-item ${key === currentCategory && item.id === currentSubItem ? 'active' : ''}" 
+                                 onclick="selectSubItem('${key}', '${item.id}')">
+                                <i class="fas ${item.icon}"></i>
+                                <span>${item.label}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleCategory(catKey) {
+            const group = document.querySelector(`.category-group[data-category="${catKey}"]`);
+            const wasExpanded = group.classList.contains('expanded');
+
+            // Close all
+            document.querySelectorAll('.category-group').forEach(g => g.classList.remove('expanded'));
+
+            // Open clicked if it was closed
+            if (!wasExpanded) {
+                group.classList.add('expanded');
+            }
+        }
+
+        function selectCategory(catKey) {
+            currentCategory = catKey;
+            currentSubItem = categories[catKey].items[0].id;
+
+            // Update bottom nav
+            document.querySelectorAll('.bottom-nav-item').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.category === catKey);
+            });
+
+            // Update sidebar
+            renderCategoryNav();
+
+            // Render content
+            renderContent();
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectSubItem(catKey, itemId) {
+            currentCategory = catKey;
+            currentSubItem = itemId;
+            renderCategoryNav();
+            renderContent();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==================== CONTENT RENDERER ====================
+        function renderContent() {
+            const container = document.getElementById('dynamicContent');
+            const cat = categories[currentCategory];
+            const item = cat.items.find(i => i.id === currentSubItem);
+
+            container.innerHTML = `<div class="animate-in">${getContentHTML(currentCategory, currentSubItem)}</div>`;
+
+            // Re-initialize category-specific stuff
+            if (currentCategory === 'voice' && currentSubItem === 'speak') {
+                setupWaveform();
+            }
+        }
+
+        function getContentHTML(cat, item) {
+            // VOICE - SPEAK
+            if (cat === 'voice' && item === 'speak') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-keyboard text-cyan-400"></i> Text to Speech</h3>
+                        <div class="card-base">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs text-cyan-200/40">Enter text below</span>
+                                <div class="flex gap-1">
+                                    <button onclick="clearText()" class="w-8 h-8 flex items-center justify-center rounded-lg text-cyan-400/60 hover:text-cyan-400 hover:bg-white/5 active:scale-95">
+                                        <i class="fas fa-trash text-xs"></i>
+                                    </button>
+                                    <button onclick="pasteText()" class="w-8 h-8 flex items-center justify-center rounded-lg text-cyan-400/60 hover:text-cyan-400 hover:bg-white/5 active:scale-95">
+                                        <i class="fas fa-paste text-xs"></i>
+                                    </button>
+                                    <button onclick="loadSample()" class="w-8 h-8 flex items-center justify-center rounded-lg text-cyan-400/60 hover:text-cyan-400 hover:bg-white/5 active:scale-95">
+                                        <i class="fas fa-magic text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <textarea id="voiceText" class="neon-input" rows="5" 
+                                placeholder="Enter text... ඔබගේ පාඨය... உங்கள் உரை..."></textarea>
+                            <div class="flex justify-between items-center mt-2">
+                                <span class="text-xs text-cyan-200/40" id="charCount">0 chars</span>
+                                <button onclick="detectLanguage()" class="text-cyan-400/60 hover:text-cyan-400 text-xs transition px-2 py-1 rounded-lg hover:bg-white/5 active:scale-95">
+                                    <i class="fas fa-language mr-1"></i>Detect
+                                </button>
+                            </div>
+                            <div id="detectedLang" class="mt-2 hidden">
+                                <span class="language-badge text-xs"><i class="fas fa-check-circle"></i> <span id="langName">English</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Waveform -->
+                        <div class="card-base">
+                            <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2"><i class="fas fa-wave-square text-green-400"></i> Visualizer</h4>
+                            <div class="waveform-container">
+                                <canvas id="waveformCanvas" class="waveform-canvas"></canvas>
+                                <div id="visualizerOverlay" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                    <div class="text-cyan-200/30 text-xs">Tap play to visualize</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-center gap-1 h-6 mt-3" id="equalizer" style="display:none;">
+                                ${Array(10).fill(0).map((_,i) => `<div class="equalizer-bar" style="height:${20+Math.random()*80}%;animation-delay:${i*0.1}s"></div>`).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Controls -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="speakText()" id="speakBtn" class="glow-btn col-span-2 text-white px-4 py-4 text-base active:scale-[0.98]">
+                                <i class="fas fa-play mr-2"></i> Speak Now
+                            </button>
+                            <button onclick="startRecording()" id="recordBtn" class="glow-btn text-white px-3 py-3 text-sm active:scale-[0.98]">
+                                <i class="fas fa-circle text-red-400 mr-1"></i> Record
+                            </button>
+                            <button onclick="stopSpeech()" id="stopBtn" class="glow-btn text-white px-3 py-3 text-sm active:scale-[0.98]" disabled>
+                                <i class="fas fa-stop mr-1"></i> Stop
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // VOICE - SELECTION
+            if (cat === 'voice' && item === 'voices') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-user-voice text-purple-400"></i> Voice Selection</h3>
+                        <div class="card-base">
+                            <div class="voice-grid" id="voiceList">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // VOICE - EFFECTS
+            if (cat === 'voice' && item === 'effects') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-magic text-yellow-400"></i> Voice Effects</h3>
+                        <div class="card-base">
+                            <div class="effect-grid">
+                                <button class="effect-btn ${currentEffects.has('robot')?'active':''}" onclick="toggleEffect('robot')"><i class="fas fa-robot"></i> Robot</button>
+                                <button class="effect-btn ${currentEffects.has('echo')?'active':''}" onclick="toggleEffect('echo')"><i class="fas fa-volume-up"></i> Echo</button>
+                                <button class="effect-btn ${currentEffects.has('reverb')?'active':''}" onclick="toggleEffect('reverb')"><i class="fas fa-water"></i> Reverb</button>
+                                <button class="effect-btn ${currentEffects.has('whisper')?'active':''}" onclick="toggleEffect('whisper')"><i class="fas fa-wind"></i> Whisper</button>
+                                <button class="effect-btn ${currentEffects.has('radio')?'active':''}" onclick="toggleEffect('radio')"><i class="fas fa-broadcast-tower"></i> Radio</button>
+                                <button class="effect-btn ${currentEffects.has('phone')?'active':''}" onclick="toggleEffect('phone')"><i class="fas fa-phone"></i> Phone</button>
+                                <button class="effect-btn ${currentEffects.has('underwater')?'active':''}" onclick="toggleEffect('underwater')"><i class="fas fa-water"></i> Underwater</button>
+                                <button class="effect-btn ${currentEffects.has('chipmunk')?'active':''}" onclick="toggleEffect('chipmunk')"><i class="fas fa-cat"></i> Chipmunk</button>
+                            </div>
+                        </div>
+                        <div class="card-base">
+                            <p class="text-sm text-cyan-200/60">Effects modify pitch, speed and tone. Combine multiple for creative results!</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // VOICE - SETTINGS
+            if (cat === 'voice' && item === 'settings') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-sliders-h text-pink-400"></i> Voice Settings</h3>
+                        <div class="card-base space-y-5">
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <label class="text-cyan-200/70 text-sm font-medium">Speed</label>
+                                    <span class="text-cyan-400 font-mono font-bold" id="rateValue">1.0x</span>
+                                </div>
+                                <input type="range" id="rateSlider" class="neon-slider" min="0.3" max="2.0" step="0.1" value="1.0" oninput="updateRate(this.value)">
+                                <div class="flex justify-between text-[10px] text-cyan-200/30 mt-1"><span>Slow</span><span>Normal</span><span>Fast</span></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <label class="text-cyan-200/70 text-sm font-medium">Pitch</label>
+                                    <span class="text-cyan-400 font-mono font-bold" id="pitchValue">1.0</span>
+                                </div>
+                                <input type="range" id="pitchSlider" class="neon-slider" min="0.5" max="2.0" step="0.1" value="1.0" oninput="updatePitch(this.value)">
+                                <div class="flex justify-between text-[10px] text-cyan-200/30 mt-1"><span>Low</span><span>Normal</span><span>High</span></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <label class="text-cyan-200/70 text-sm font-medium">Volume</label>
+                                    <span class="text-cyan-400 font-mono font-bold" id="volumeValue">100%</span>
+                                </div>
+                                <input type="range" id="volumeSlider" class="neon-slider" min="0" max="1" step="0.05" value="1" oninput="updateVolume(this.value)">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // VOICE - BATCH
+            if (cat === 'voice' && item === 'batch') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-layer-group text-cyan-400"></i> Batch Process</h3>
+                        <div class="card-base">
+                            <p class="text-xs text-cyan-200/50 mb-3">One text per line</p>
+                            <textarea id="batchText" class="neon-input mb-3" rows="6" placeholder="Line 1: Hello&#10;Line 2: World&#10;..."></textarea>
+                            <div class="flex gap-2 mb-3">
+                                <select class="dropdown text-sm flex-1" id="batchVoice"><option value="">Default Voice</option></select>
+                                <select class="dropdown text-sm" id="batchFormat">
+                                    <option value="mp3">MP3</option>
+                                    <option value="wav">WAV</option>
+                                    <option value="ogg">OGG</option>
+                                </select>
+                            </div>
+                            <button onclick="processBatch()" id="batchBtn" class="glow-btn w-full text-white px-4 py-3 text-sm active:scale-[0.98]">
+                                <i class="fas fa-play-circle mr-2"></i> Process (<span id="batchCount">0</span>)
+                            </button>
+                        </div>
+                        <div id="batchResults" class="space-y-2"></div>
+                    </div>
+                `;
+            }
+
+            // LOGO - GENERATE
+            if (cat === 'logo' && item === 'generate') {
+                return `
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="section-title m-0"><i class="fas fa-wand-magic-sparkles text-purple-400"></i> Generate Logo</h3>
+                            <div id="limitIndicator2" class="limit-badge limit-ok text-xs">
+                                <i class="fas fa-coins"></i><span id="limitText2">5/5</span>
+                            </div>
+                        </div>
+
+                        <div class="card-base">
+                            <label class="text-cyan-200/70 text-sm font-medium block mb-2">Brand Name *</label>
+                            <input type="text" id="brandName" class="neon-input mb-3" placeholder="e.g., NEXORA">
+                            <label class="text-cyan-200/70 text-sm font-medium block mb-2">Tagline (Optional)</label>
+                            <input type="text" id="brandTagline" class="neon-input mb-3" placeholder="e.g., Think Different">
+                            <label class="text-cyan-200/70 text-sm font-medium block mb-2">Industry</label>
+                            <select class="dropdown text-sm mb-3" id="brandIndustry">
+                                <option value="technology">Technology</option>
+                                <option value="food">Food</option>
+                                <option value="fashion">Fashion</option>
+                                <option value="health">Health</option>
+                                <option value="education">Education</option>
+                                <option value="finance">Finance</option>
+                                <option value="sports">Sports</option>
+                                <option value="music">Music</option>
+                                <option value="travel">Travel</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="card-base">
+                            <label class="text-cyan-200/70 text-sm font-medium block mb-2">Style</label>
+                            <div class="style-grid" id="styleGrid">
+                                <div class="logo-style-card selected" data-style="modern" onclick="selectStyle(this)">
+                                    <div class="style-icon bg-gradient-to-br from-cyan-400 to-blue-500"><i class="fas fa-rocket text-white"></i></div>
+                                    <h4 class="text-white font-semibold text-xs">Modern</h4>
+                                </div>
+                                <div class="logo-style-card" data-style="minimal" onclick="selectStyle(this)">
+                                    <div class="style-icon bg-gradient-to-br from-gray-400 to-gray-600"><i class="fas fa-minus text-white"></i></div>
+                                    <h4 class="text-white font-semibold text-xs">Minimal</h4>
+                                </div>
+                                <div class="logo-style-card" data-style="tech" onclick="selectStyle(this)">
+                                    <div class="style-icon bg-gradient-to-br from-blue-500 to-indigo-600"><i class="fas fa-microchip text-white"></i></div>
+                                    <h4 class="text-white font-semibold text-xs">Tech</h4>
+                                </div>
+                                <div class="logo-style-card" data-style="luxury" onclick="selectStyle(this)">
+                                    <div class="style-icon bg-gradient-to-br from-yellow-400 to-amber-600"><i class="fas fa-gem text-white"></i></div>
+                                    <h4 class="text-white font-semibold text-xs">Luxury</h4>
+                                </div>
+                                <div class="logo-style-card" data-style="playful" onclick="selectStyle(this)">
+                                    <div class="style-icon bg-gradient-to-br from-pink-400 to-rose-500"><i class="fas fa-gamepad text-white"></i></div>
+                                    <h4 class="text-white font-semibold text-xs">Playful</h4>
+                                </div>
+                                <div class="logo-style-card" data-style="professional" onclick="selectStyle(this)">
+                                    <div class="style-icon bg-gradient-to-br from-emerald-400 to-teal-600"><i class="fas fa-briefcase text-white"></i></div>
+                                    <h4 class="text-white font-semibold text-xs">Professional</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-base">
+                            <label class="text-cyan-200/70 text-sm font-medium block mb-2">Custom Description</label>
+                            <textarea id="logoPrompt" class="neon-input mb-3" rows="2" placeholder="Colors, shapes, mood..."></textarea>
+                            <div class="prompt-grid">
+                                <span class="prompt-tag" onclick="addPrompt('Blue')">🔵 Blue</span>
+                                <span class="prompt-tag" onclick="addPrompt('Red')">🔴 Red</span>
+                                <span class="prompt-tag" onclick="addPrompt('Green')">🟢 Green</span>
+                                <span class="prompt-tag" onclick="addPrompt('Gold')">🟡 Gold</span>
+                                <span class="prompt-tag" onclick="addPrompt('Purple')">🟣 Purple</span>
+                                <span class="prompt-tag" onclick="addPrompt('Gradient')">🌈 Grad</span>
+                            </div>
+                        </div>
+
+                        <button onclick="generateLogo()" id="logoGenerateBtn" class="glow-btn w-full text-white px-4 py-4 text-lg font-bold active:scale-[0.98]">
+                            <i class="fas fa-wand-magic-sparkles mr-2"></i> Generate Logo
+                        </button>
+
+                        <!-- Preview -->
+                        <div class="card-base">
+                            <h4 class="text-sm font-bold text-white mb-3"><i class="fas fa-eye text-green-400 mr-2"></i>Preview</h4>
+                            <div class="logo-preview-container" id="logoPreview">
+                                <div class="text-center text-cyan-200/30">
+                                    <i class="fas fa-image text-4xl mb-2 opacity-30"></i>
+                                    <p class="text-xs">Logo appears here</p>
+                                </div>
+                            </div>
+                            <div id="logoActions" class="flex gap-2 mt-3 hidden">
+                                <button onclick="downloadLogo()" class="glow-btn flex-1 text-white px-3 py-2 text-xs active:scale-[0.98]"><i class="fas fa-download mr-1"></i> Download</button>
+                                <button onclick="regenerateLogo()" class="glow-btn flex-1 text-white px-3 py-2 text-xs active:scale-[0.98]"><i class="fas fa-redo mr-1"></i> Retry</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // LOGO - GALLERY
+            if (cat === 'logo' && item === 'gallery') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-images text-purple-400"></i> My Logos</h3>
+                        <div class="logo-gallery" id="logoGallery">
+                            ${logoHistory.length === 0 ? '<div class="text-center text-cyan-200/40 py-12 col-span-full"><i class="fas fa-images text-4xl mb-3 opacity-30"></i><p>No logos yet!</p></div>' : 
+                            logoHistory.map(item => `
+                                <div class="logo-result-card">
+                                    <img src="${item.url}" alt="${item.brandName}" loading="lazy">
+                                    <div class="p-2">
+                                        <h4 class="text-white font-semibold text-xs truncate">${item.brandName}</h4>
+                                        <p class="text-cyan-200/50 text-[10px]">${item.style}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // LOGO - STYLES
+            if (cat === 'logo' && item === 'styles') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-paint-brush text-pink-400"></i> Style Guide</h3>
+                        <div class="card-base">
+                            <div class="space-y-3">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center flex-shrink-0"><i class="fas fa-rocket text-white text-sm"></i></div>
+                                    <div><h4 class="text-white font-semibold text-sm">Modern</h4><p class="text-cyan-200/50 text-xs">Clean lines, contemporary feel</p></div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center flex-shrink-0"><i class="fas fa-minus text-white text-sm"></i></div>
+                                    <div><h4 class="text-white font-semibold text-sm">Minimal</h4><p class="text-cyan-200/50 text-xs">Simple, elegant, white space</p></div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0"><i class="fas fa-microchip text-white text-sm"></i></div>
+                                    <div><h4 class="text-white font-semibold text-sm">Tech</h4><p class="text-cyan-200/50 text-xs">Futuristic, digital, neon</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // TOOLS - LINK SHORTENER (NEW FEATURE)
+            if (cat === 'tools' && item === 'shortener') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-link text-yellow-400"></i> Link Shortener</h3>
+                        <div class="card-base">
+                            <label class="text-cyan-200/70 text-sm font-medium block mb-2">Paste Long URL</label>
+                            <div class="relative">
+                                <input type="url" id="longUrl" class="neon-input pr-12" placeholder="https://example.com/very/long/url...">
+                                <button onclick="pasteUrl()" class="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-400/60 hover:text-cyan-400 transition">
+                                    <i class="fas fa-paste"></i>
+                                </button>
+                            </div>
+                            <button onclick="shortenLink()" id="shortenBtn" class="glow-btn w-full mt-4 text-white px-4 py-3 text-base font-bold active:scale-[0.98]">
+                                <i class="fas fa-compress-alt mr-2"></i> Shorten URL
+                            </button>
+                        </div>
+
+                        <div id="shortenResult" class="hidden">
+                            <div class="card-base bg-gradient-to-r from-cyan-900/20 to-purple-900/20 border-cyan-500/30">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <i class="fas fa-check-circle text-green-400"></i>
+                                    <span class="text-white font-semibold text-sm">Short URL Ready!</span>
+                                </div>
+                                <div class="bg-black/30 rounded-lg p-3 flex items-center gap-2 border border-white/5">
+                                    <input type="text" id="shortUrlDisplay" readonly class="bg-transparent text-cyan-300 text-sm w-full outline-none font-mono">
+                                    <button onclick="copyShortUrl()" class="text-white bg-white/10 hover:bg-white/20 p-2 rounded-lg transition active:scale-95">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <button onclick="testShortUrl()" class="text-white bg-white/10 hover:bg-white/20 p-2 rounded-lg transition active:scale-95">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // TOOLS - LANGUAGE
+            if (cat === 'tools' && item === 'language') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-language text-cyan-400"></i> Language Detector</h3>
+                        <div class="card-base">
+                            <textarea id="detectText" class="neon-input mb-3" rows="4" placeholder="Paste text to detect language..."></textarea>
+                            <button onclick="detectLangTool()" class="glow-btn w-full text-white px-4 py-3 text-sm active:scale-[0.98]">
+                                <i class="fas fa-search mr-2"></i> Detect Language
+                            </button>
+                            <div id="detectResult" class="mt-3 hidden">
+                                <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+                                    <p class="text-sm text-cyan-200/70">Detected: <span class="text-cyan-400 font-bold" id="detectedResult">English</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // TOOLS - CONVERTER
+            if (cat === 'tools' && item === 'converter') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-exchange-alt text-yellow-400"></i> Text Tools</h3>
+                        <div class="card-base space-y-3">
+                            <textarea id="toolText" class="neon-input" rows="4" placeholder="Enter text..."></textarea>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="textToUpper()" class="glow-btn text-white px-3 py-2 text-xs active:scale-[0.98]">UPPERCASE</button>
+                                <button onclick="textToLower()" class="glow-btn text-white px-3 py-2 text-xs active:scale-[0.98]">lowercase</button>
+                                <button onclick="textReverse()" class="glow-btn text-white px-3 py-2 text-xs active:scale-[0.98]">Reverse</button>
+                                <button onclick="textCopy()" class="glow-btn text-white px-3 py-2 text-xs active:scale-[0.98]">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // TOOLS - RECORDER
+            if (cat === 'tools' && item === 'recorder') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-circle text-red-400"></i> Audio Recorder</h3>
+                        <div class="card-base text-center py-8">
+                            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-500/30" id="recIndicator">
+                                <i class="fas fa-microphone text-white text-2xl"></i>
+                            </div>
+                            <p class="text-sm text-cyan-200/60 mb-4">Record your voice and download</p>
+                            <button onclick="toggleMicRecord()" id="micRecordBtn" class="glow-btn text-white px-6 py-3 text-base active:scale-[0.98]">
+                                <i class="fas fa-circle mr-2"></i> Start Recording
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // HISTORY - VOICE
+            if (cat === 'history' && item === 'voice-history') {
+                return `
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="section-title m-0"><i class="fas fa-microphone text-cyan-400"></i> Voice History</h3>
+                            <button onclick="clearVoiceHistory()" class="text-cyan-400/60 hover:text-cyan-400 text-xs px-3 py-2 rounded-lg hover:bg-white/5 active:scale-95">
+                                <i class="fas fa-trash mr-1"></i>Clear
+                            </button>
+                        </div>
+                        <div class="space-y-2" id="voiceHistoryList">
+                            ${generationHistory.length === 0 ? '<div class="text-center text-cyan-200/40 py-8"><i class="fas fa-history text-3xl mb-2 opacity-30"></i><p class="text-xs">No voice history</p></div>' :
+                            generationHistory.slice(0, 20).map(h => `
+                                <div class="history-item" onclick="loadHistoryItem(${h.id})">
+                                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-volume-up text-white text-xs"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-white text-xs truncate">${h.text}</div>
+                                        <div class="text-cyan-200/40 text-[10px]">${h.voice} | ${h.date}</div>
+                                    </div>
+                                    <button class="text-cyan-400/40 hover:text-cyan-400 transition p-2 rounded-lg hover:bg-white/5 active:scale-95" onclick="event.stopPropagation(); speakHistoryItem(${h.id})">
+                                        <i class="fas fa-play text-xs"></i>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // HISTORY - LOGO
+            if (cat === 'history' && item === 'logo-history') {
+                return `
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="section-title m-0"><i class="fas fa-palette text-purple-400"></i> Logo History</h3>
+                            <button onclick="clearLogoHistory()" class="text-cyan-400/60 hover:text-cyan-400 text-xs px-3 py-2 rounded-lg hover:bg-white/5 active:scale-95">
+                                <i class="fas fa-trash mr-1"></i>Clear
+                            </button>
+                        </div>
+                        <div class="logo-gallery" id="logoHistoryGallery">
+                            ${logoHistory.length === 0 ? '<div class="text-center text-cyan-200/40 py-8 col-span-full"><i class="fas fa-images text-3xl mb-2 opacity-30"></i><p class="text-xs">No logo history</p></div>' :
+                            logoHistory.map(item => `
+                                <div class="logo-result-card">
+                                    <img src="${item.url}" alt="${item.brandName}" loading="lazy">
+                                    <div class="p-2">
+                                        <h4 class="text-white font-semibold text-xs truncate">${item.brandName}</h4>
+                                        <p class="text-cyan-200/50 text-[10px]">${item.style} | ${item.date}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // SETTINGS - GENERAL
+            if (cat === 'settings' && item === 'general') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-cog text-gray-400"></i> General</h3>
+                        <div class="card-base space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-white text-sm font-semibold">Auto Download</h4>
+                                    <p class="text-cyan-200/50 text-xs">Download after generation</p>
+                                </div>
+                                <div class="w-12 h-7 bg-cyan-500/20 rounded-full relative cursor-pointer" onclick="toggleSwitch(this, 'autoDownload')">
+                                    <div class="w-5 h-5 bg-cyan-400 rounded-full absolute top-1 right-1 transition-all shadow-lg" id="autoDownloadSwitch"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-white text-sm font-semibold">Dark Mode</h4>
+                                    <p class="text-cyan-200/50 text-xs">Always enabled</p>
+                                </div>
+                                <span class="text-cyan-400 text-xs font-bold">ON</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // SETTINGS - AUDIO
+            if (cat === 'settings' && item === 'audio') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-volume-up text-cyan-400"></i> Audio Quality</h3>
+                        <div class="card-base space-y-4">
+                            <div>
+                                <label class="text-cyan-200/70 text-sm font-medium block mb-2">Sample Rate</label>
+                                <select class="dropdown text-sm" id="sampleRate">
+                                    <option value="22050">22.05 kHz</option>
+                                    <option value="44100" selected>44.1 kHz</option>
+                                    <option value="48000">48 kHz</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-cyan-200/70 text-sm font-medium block mb-2">Format</label>
+                                <select class="dropdown text-sm" id="fileFormat">
+                                    <option value="mp3" selected>MP3</option>
+                                    <option value="wav">WAV</option>
+                                    <option value="ogg">OGG</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-cyan-200/70 text-sm font-medium block mb-2">Bitrate</label>
+                                <select class="dropdown text-sm" id="bitrate">
+                                    <option value="128">128 kbps</option>
+                                    <option value="192" selected>192 kbps</option>
+                                    <option value="320">320 kbps</option>
+                                </select>
+                            </div>
+                            <button onclick="saveSettings()" class="glow-btn w-full text-white px-4 py-3 text-sm active:scale-[0.98]">
+                                <i class="fas fa-save mr-2"></i>Save
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // SETTINGS - ABOUT
+            if (cat === 'settings' && item === 'about') {
+                return `
+                    <div class="space-y-4">
+                        <h3 class="section-title"><i class="fas fa-info-circle text-blue-400"></i> About</h3>
+                        <div class="card-base text-center py-8">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-cyan-500/20">
+                                <i class="fas fa-robot text-white text-2xl"></i>
+                            </div>
+                            <h2 class="text-xl font-black font-orbitron text-white mb-1">NEXORA X</h2>
+                            <p class="text-cyan-200/50 text-sm mb-4">AI Creative Studio v2.0</p>
+                            <div class="space-y-2 text-xs text-cyan-200/60">
+                                <p><i class="fas fa-check-circle text-green-400 mr-2"></i>AI Voice Generation</p>
+                                <p><i class="fas fa-check-circle text-green-400 mr-2"></i>AI Logo Maker</p>
+                                <p><i class="fas fa-check-circle text-green-400 mr-2"></i>Link Shortener</p>
+                                <p><i class="fas fa-check-circle text-green-400 mr-2"></i>Multi-language Support</p>
+                                <p><i class="fas fa-check-circle text-green-400 mr-2"></i>Mobile Optimized</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return '<div class="text-center text-cyan-200/40 py-12"><p>Coming soon!</p></div>';
+        }
+
+        // ==================== VOICES ====================
+        function loadVoices() {
+            voices = synth.getVoices();
+            if (voices.length === 0) {
+                synth.onvoiceschanged = () => { voices = synth.getVoices(); populateVoices(); };
+            } else {
+                populateVoices();
+            }
+        }
+
+        function populateVoices() {
+            const voiceList = document.getElementById('voiceList');
+            if (!voiceList) return;
+
+            const batchVoice = document.getElementById('batchVoice');
+            const defaultVoice = document.getElementById('defaultVoice');
+
+            voiceList.innerHTML = '';
+            if (batchVoice) batchVoice.innerHTML = '<option value="">Default Voice</option>';
+            if (defaultVoice) defaultVoice.innerHTML = '<option value="">System Default</option>';
+
+            const categories = { 'English': [], 'Sinhala': [], 'Tamil': [], 'Other': [] };
+
+            voices.forEach((voice, index) => {
+                const name = voice.name.toLowerCase();
+                const lang = voice.lang.toLowerCase();
+                let category = 'Other';
+                if (lang.includes('si') || name.includes('sinhala')) category = 'Sinhala';
+                else if (lang.includes('ta') || name.includes('tamil')) category = 'Tamil';
+                else if (lang.includes('en') || name.includes('english')) category = 'English';
+                categories[category].push({ voice, index });
+            });
+
+            Object.entries(categories).forEach(([category, items]) => {
+                if (items.length === 0) return;
+
+                const catDiv = document.createElement('div');
+                catDiv.className = 'col-span-full mb-1';
+                catDiv.innerHTML = '<h4 class="text-cyan-200/50 text-xs uppercase tracking-wider font-semibold">' + category + '</h4>';
+                voiceList.appendChild(catDiv);
+
+                items.forEach(({ voice, index }) => {
+                    const div = document.createElement('div');
+                    div.className = 'voice-option' + (index === 0 ? ' selected' : '');
+                    div.onclick = () => selectVoice(index, div);
+                    div.dataset.index = index;
+
+                    const isMale = voice.name.toLowerCase().includes('male') || (!voice.name.toLowerCase().includes('female') && Math.random() > 0.5);
+                    const icon = isMale ? 'fa-mars' : 'fa-venus';
+                    const color = isMale ? 'from-cyan-500 to-blue-500' : 'from-pink-500 to-purple-500';
+
+                    div.innerHTML = '<div class="voice-icon bg-gradient-to-br ' + color + '"><i class="fas ' + icon + ' text-white"></i></div><div class="flex-1 min-w-0"><div class="text-white font-medium text-sm truncate">' + voice.name + '</div><div class="text-cyan-200/40 text-xs">' + voice.lang + '</div></div><button class="text-cyan-400/40 hover:text-cyan-400 transition p-2 rounded-lg hover:bg-white/5 active:scale-95" onclick="event.stopPropagation(); previewVoice(' + index + ')"><i class="fas fa-volume-up text-xs"></i></button>';
+                    voiceList.appendChild(div);
+
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = voice.name + ' (' + voice.lang + ')';
+                    if (batchVoice) batchVoice.appendChild(option.cloneNode(true));
+                    if (defaultVoice) defaultVoice.appendChild(option);
+                });
+            });
+
+            if (voices.length > 0) currentVoice = voices[0];
+        }
+
+        function selectVoice(index, element) {
+            document.querySelectorAll('.voice-option').forEach(v => v.classList.remove('selected'));
+            element.classList.add('selected');
+            currentVoice = voices[index];
+            showToast('Voice: ' + currentVoice.name, 'success');
+        }
+
+        function previewVoice(index) {
+            const previewUtterance = new SpeechSynthesisUtterance('Hello, this is my voice preview.');
+            previewUtterance.voice = voices[index];
+            previewUtterance.rate = settings.rate;
+            previewUtterance.pitch = settings.pitch;
+            synth.speak(previewUtterance);
+        }
+
+        // ==================== SLIDERS ====================
+        function updateRate(value) { 
+            document.getElementById('rateValue').textContent = value + 'x'; 
+            settings.rate = parseFloat(value); 
+        }
+        function updatePitch(value) { 
+            document.getElementById('pitchValue').textContent = value; 
+            settings.pitch = parseFloat(value); 
+        }
+        function updateVolume(value) { 
+            document.getElementById('volumeValue').textContent = Math.round(value * 100) + '%'; 
+            settings.volume = parseFloat(value); 
+        }
+
+        // ==================== EFFECTS ====================
+        function toggleEffect(effect) {
+            const btn = document.getElementById('effect-' + effect);
+            if (!btn) return;
+            if (currentEffects.has(effect)) { 
+                currentEffects.delete(effect); 
+                btn.classList.remove('active'); 
+            } else { 
+                currentEffects.add(effect); 
+                btn.classList.add('active'); 
+            }
+        }
+
+        function applyEffects(utterance) {
+            if (currentEffects.has('robot')) { utterance.pitch = 0.1; utterance.rate = 0.8; }
+            if (currentEffects.has('chipmunk')) { utterance.pitch = 2.0; utterance.rate = 1.5; }
+            if (currentEffects.has('whisper')) { utterance.pitch = 0.5; utterance.volume = 0.3; }
+            if (currentEffects.has('phone')) { utterance.pitch = 0.9; utterance.rate = 1.1; }
+        }
+
+        // ==================== TEXT UTILITIES ====================
+        function clearText() { 
+            const el = document.getElementById('voiceText');
+            if (el) { el.value = ''; document.getElementById('charCount').textContent = '0 chars'; }
+        }
+
+        async function pasteText() {
+            try {
+                const text = await navigator.clipboard.readText();
+                const el = document.getElementById('voiceText');
+                if (el) { el.value = text; document.getElementById('charCount').textContent = text.length + ' chars'; }
+                showToast('Pasted!', 'success');
+            } catch (err) { showToast('Clipboard denied', 'error'); }
+        }
+
+        function loadSample() {
+            const samples = [
+                'Hello! Welcome to NEXORA X AI Voice Studio.',
+                'ආයුබෝවන්! NEXORA X AI Voice Studio වෙත සාදරයෙන් පිළිගන්නවා.',
+                'வணக்கம்! NEXORA X AI Voice Studio-க்கு வரவேற்கிறோம்.'
+            ];
+            const randomSample = samples[Math.floor(Math.random() * samples.length)];
+            const el = document.getElementById('voiceText');
+            if (el) { el.value = randomSample; document.getElementById('charCount').textContent = randomSample.length + ' chars'; }
+            detectLanguage();
+        }
+
+        function detectLanguage() {
+            const text = document.getElementById('voiceText')?.value || '';
+            if (!text) { showToast('Enter text first', 'error'); return; }
+
+            let lang = 'English', langCode = 'en';
+            const sinhalaRegex = /[\u0D80-\u0DFF]/;
+            const tamilRegex = /[\u0B80-\u0BFF]/;
+
+            if (sinhalaRegex.test(text)) { lang = 'Sinhala'; langCode = 'si'; }
+            else if (tamilRegex.test(text)) { lang = 'Tamil'; langCode = 'ta'; }
+
+            const langEl = document.getElementById('langName');
+            if (langEl) langEl.textContent = lang + ' Detected';
+            const detectedEl = document.getElementById('detectedLang');
+            if (detectedEl) detectedEl.classList.remove('hidden');
+
+            const matchingVoice = voices.find(v => v.lang.toLowerCase().includes(langCode));
+            if (matchingVoice) {
+                const voiceIndex = voices.indexOf(matchingVoice);
+                const voiceElement = document.querySelector('.voice-option[data-index="' + voiceIndex + '"]');
+                if (voiceElement) selectVoice(voiceIndex, voiceElement);
+            }
+            showToast('Detected: ' + lang, 'success');
+        }
+
+        // ==================== WAVEFORM ====================
+        function setupWaveform() {
+            const canvas = document.getElementById('waveformCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            function resize() { 
+                canvas.width = canvas.offsetWidth; 
+                canvas.height = canvas.offsetHeight; 
+                drawStaticWaveform(ctx, canvas.width, canvas.height);
+            }
+            resize(); 
+            window.addEventListener('resize', resize);
+        }
+
+        function drawStaticWaveform(ctx, width, height) {
+            ctx.clearRect(0, 0, width, height);
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.2)';
+            ctx.lineWidth = 2;
+            for (let x = 0; x < width; x++) {
+                const y = height / 2 + Math.sin(x * 0.02) * 20 + Math.sin(x * 0.05) * 10;
+                if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+
+        function startVisualizer() {
+            const canvas = document.getElementById('waveformCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const overlay = document.getElementById('visualizerOverlay');
+            if (overlay) overlay.classList.add('hidden');
+            const eq = document.getElementById('equalizer');
+            if (eq) eq.style.display = 'flex';
+
+            function animate() {
+                if (!isPlaying) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const time = Date.now() * 0.002;
+                const bars = Math.min(50, Math.floor(canvas.width / 12));
+                const barWidth = canvas.width / bars;
+
+                for (let i = 0; i < bars; i++) {
+                    const height = Math.abs(Math.sin(time + i * 0.2)) * 80 + 10;
+                    const x = i * barWidth;
+                    const y = (canvas.height - height) / 2;
+                    const gradient = ctx.createLinearGradient(0, y, 0, y + height);
+                    gradient.addColorStop(0, 'rgba(0, 212, 255, 0.8)');
+                    gradient.addColorStop(0.5, 'rgba(124, 58, 237, 0.6)');
+                    gradient.addColorStop(1, 'rgba(0, 212, 255, 0.8)');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(x + 2, y, barWidth - 4, height);
+                }
+                animationId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function stopVisualizer() {
+            if (animationId) cancelAnimationFrame(animationId);
+            const canvas = document.getElementById('waveformCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            drawStaticWaveform(ctx, canvas.width, canvas.height);
+            const overlay = document.getElementById('visualizerOverlay');
+            if (overlay) overlay.classList.remove('hidden');
+            const eq = document.getElementById('equalizer');
+            if (eq) eq.style.display = 'none';
+        }
+
+        // ==================== SPEECH ====================
+        function speakText() {
+            const text = document.getElementById('voiceText')?.value.trim();
+            if (!text) { showToast('Enter text first', 'error'); return; }
+
+            synth.cancel();
+            utterance = new SpeechSynthesisUtterance(text);
+            utterance.voice = currentVoice;
+            utterance.rate = settings.rate;
+            utterance.pitch = settings.pitch;
+            utterance.volume = settings.volume;
+            applyEffects(utterance);
+
+            utterance.onstart = () => {
+                isPlaying = true; isPaused = false;
+                const stopBtn = document.getElementById('stopBtn');
+                if (stopBtn) stopBtn.disabled = false;
+                startVisualizer();
+            };
+
+            utterance.onend = () => {
+                isPlaying = false; isPaused = false;
+                const stopBtn = document.getElementById('stopBtn');
+                if (stopBtn) stopBtn.disabled = true;
+                stopVisualizer();
+                addToHistory(text, currentVoice ? currentVoice.name : 'Default');
+            };
+
+            utterance.onerror = (e) => {
+                isPlaying = false; stopVisualizer();
+                showToast('Error: ' + e.error, 'error');
+            };
+
+            synth.speak(utterance);
+        }
+
+        function stopSpeech() {
+            synth.cancel(); isPlaying = false; isPaused = false;
+            stopVisualizer();
+            const stopBtn = document.getElementById('stopBtn');
+            if (stopBtn) stopBtn.disabled = true;
+        }
+
+        // ==================== RECORDING ====================
+        async function startRecording() {
+            const text = document.getElementById('voiceText')?.value.trim();
+            if (!text) { showToast('Enter text first', 'error'); return; }
+            if (isRecording) { stopRecording(); return; }
+
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const dest = audioContext.createMediaStreamDestination();
+                mediaRecorder = new MediaRecorder(dest.stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunks.push(e.data); };
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    downloadAudio(audioUrl, 'nexora-voice-' + Date.now() + '.webm');
+                    showToast('Saved!', 'success');
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+
+                const btn = document.getElementById('recordBtn');
+                if (btn) {
+                    btn.classList.add('recording');
+                    btn.innerHTML = '<i class="fas fa-square mr-2"></i> Stop';
+                }
+
+                speakText();
+                showToast('Recording...', 'success');
+
+            } catch (err) {
+                showToast('Recording not supported', 'error');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                const btn = document.getElementById('recordBtn');
+                if (btn) {
+                    btn.classList.remove('recording');
+                    btn.innerHTML = '<i class="fas fa-circle text-red-400 mr-2"></i> Record';
+                }
+                stopSpeech();
+            }
+        }
+
+        function downloadAudio(url, filename) {
+            const a = document.createElement('a');
+            a.href = url; a.download = filename;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+
+        // ==================== BATCH ====================
+        function processBatch() {
+            const text = document.getElementById('batchText')?.value;
+            const lines = text ? text.split('\n').filter(l => l.trim()) : [];
+            if (lines.length === 0) { showToast('Enter text first', 'error'); return; }
+
+            const container = document.getElementById('batchResults');
+            if (!container) return;
+            container.innerHTML = '';
+
+            lines.forEach((line, index) => {
+                const div = document.createElement('div');
+                div.className = 'batch-item';
+                div.id = 'batch-' + index;
+                div.innerHTML = '<div class="flex items-center gap-3 flex-1 min-w-0"><span class="text-cyan-400 font-mono text-xs font-bold">' + (index + 1) + '</span><span class="text-cyan-200/70 text-xs truncate">' + line + '</span></div><span class="status-badge status-pending text-xs" id="status-' + index + '">Pending</span>';
+                container.appendChild(div);
+            });
+
+            let currentIndex = 0;
+            function processNext() {
+                if (currentIndex >= lines.length) {
+                    showToast('Batch complete!', 'success');
+                    return;
+                }
+
+                const statusBadge = document.getElementById('status-' + currentIndex);
+                if (statusBadge) {
+                    statusBadge.className = 'status-badge status-processing text-xs';
+                    statusBadge.textContent = 'Processing...';
+                }
+
+                const utterance = new SpeechSynthesisUtterance(lines[currentIndex]);
+                const voiceIndex = document.getElementById('batchVoice')?.value;
+                if (voiceIndex && voices[voiceIndex]) utterance.voice = voices[voiceIndex];
+
+                utterance.onend = () => {
+                    if (statusBadge) {
+                        statusBadge.className = 'status-badge status-completed text-xs';
+                        statusBadge.textContent = 'Done';
+                    }
+                    currentIndex++;
+                    setTimeout(processNext, 500);
+                };
+
+                utterance.onerror = () => {
+                    if (statusBadge) {
+                        statusBadge.className = 'status-badge status-failed text-xs';
+                        statusBadge.textContent = 'Failed';
+                    }
+                    currentIndex++;
+                    setTimeout(processNext, 500);
+                };
+
+                synth.speak(utterance);
+            }
+
+            processNext();
+            showToast('Processing ' + lines.length + ' items...', 'info');
+        }
+
+        // ==================== HISTORY ====================
+        function addToHistory(text, voiceName) {
+            const item = { 
+                text: text.substring(0, 100) + (text.length > 100 ? '...' : ''), 
+                voice: voiceName, 
+                date: new Date().toLocaleString(), 
+                id: Date.now() 
+            };
+            generationHistory.unshift(item);
+            if (generationHistory.length > 50) generationHistory.pop();
+            localStorage.setItem('nexora_voice_history', JSON.stringify(generationHistory));
+        }
+
+        function loadHistoryItem(id) {
+            const item = generationHistory.find(h => h.id === id);
+            if (item) {
+                const el = document.getElementById('voiceText');
+                if (el) el.value = item.text.replace('...', '');
+                selectCategory('voice');
+                selectSubItem('voice', 'speak');
+                showToast('Loaded from history', 'success');
+            }
+        }
+
+        function speakHistoryItem(id) {
+            const item = generationHistory.find(h => h.id === id);
+            if (item) {
+                const el = document.getElementById('voiceText');
+                if (el) el.value = item.text.replace('...', '');
+                speakText();
+            }
+        }
+
+        function clearVoiceHistory() {
+            if (confirm('Clear all voice history?')) {
+                generationHistory = [];
+                localStorage.removeItem('nexora_voice_history');
+                renderContent();
+                showToast('Cleared', 'success');
+            }
+        }
+
+        function clearLogoHistory() {
+            if (confirm('Clear all logo history?')) {
+                logoHistory = [];
+                localStorage.removeItem('nexora_logo_history');
+                renderContent();
+                showToast('Cleared', 'success');
+            }
+        }
+
+        // ==================== SETTINGS ====================
+        function toggleSwitch(el, setting) {
+            const dot = el.querySelector('div');
+            const isOn = dot.style.right === '0.25rem' || dot.style.right === '';
+            dot.style.right = isOn ? 'calc(100% - 1.5rem)' : '0.25rem';
+            dot.style.left = isOn ? '0.25rem' : 'auto';
+            settings[setting] = !isOn;
+        }
+
+        function saveSettings() {
+            settings.sampleRate = document.getElementById('sampleRate')?.value || 44100;
+            settings.format = document.getElementById('fileFormat')?.value || 'mp3';
+            settings.bitrate = document.getElementById('bitrate')?.value || 192;
+            localStorage.setItem('nexora_voice_settings', JSON.stringify(settings));
+            showToast('Settings saved!', 'success');
+        }
+
+        // ==================== TOOLS ====================
+        function detectLangTool() {
+            const text = document.getElementById('detectText')?.value || '';
+            if (!text) { showToast('Enter text', 'error'); return; }
+
+            let lang = 'English';
+            const sinhalaRegex = /[\u0D80-\u0DFF]/;
+            const tamilRegex = /[\u0B80-\u0BFF]/;
+
+            if (sinhalaRegex.test(text)) lang = 'Sinhala';
+            else if (tamilRegex.test(text)) lang = 'Tamil';
+
+            const result = document.getElementById('detectedResult');
+            if (result) result.textContent = lang;
+            const resultDiv = document.getElementById('detectResult');
+            if (resultDiv) resultDiv.classList.remove('hidden');
+            showToast('Detected: ' + lang, 'success');
+        }
+
+        function textToUpper() {
+            const el = document.getElementById('toolText');
+            if (el) el.value = el.value.toUpperCase();
+        }
+        function textToLower() {
+            const el = document.getElementById('toolText');
+            if (el) el.value = el.value.toLowerCase();
+        }
+        function textReverse() {
+            const el = document.getElementById('toolText');
+            if (el) el.value = el.value.split('').reverse().join('');
+        }
+        async function textCopy() {
+            const el = document.getElementById('toolText');
+            if (el && el.value) {
+                await navigator.clipboard.writeText(el.value);
+                showToast('Copied!', 'success');
+            }
+        }
+
+        let micRecorder = null;
+        let micChunks = [];
+        function toggleMicRecord() {
+            const btn = document.getElementById('micRecordBtn');
+            const indicator = document.getElementById('recIndicator');
+
+            if (micRecorder && micRecorder.state === 'recording') {
+                micRecorder.stop();
+                micRecorder = null;
+                if (btn) btn.innerHTML = '<i class="fas fa-circle mr-2"></i> Start Recording';
+                if (indicator) indicator.classList.remove('animate-pulse');
+                showToast('Recording stopped', 'info');
+            } else {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        micRecorder = new MediaRecorder(stream);
+                        micChunks = [];
+                        micRecorder.ondataavailable = e => micChunks.push(e.data);
+                        micRecorder.onstop = () => {
+                            const blob = new Blob(micChunks, { type: 'audio/webm' });
+                            const url = URL.createObjectURL(blob);
+                            downloadAudio(url, 'recording-' + Date.now() + '.webm');
+                            showToast('Saved!', 'success');
+                        };
+                        micRecorder.start();
+                        if (btn) btn.innerHTML = '<i class="fas fa-square mr-2"></i> Stop Recording';
+                        if (indicator) indicator.classList.add('animate-pulse');
+                        showToast('Recording started', 'success');
+                    })
+                    .catch(() => showToast('Mic access denied', 'error'));
+            }
+        }
+
+        // ==================== LINK SHORTENER (NEW LOGIC) ====================
+        async function pasteUrl() {
+            try {
+                const text = await navigator.clipboard.readText();
+                const el = document.getElementById('longUrl');
+                if (el) el.value = text;
+            } catch (err) {
+                showToast('Clipboard access denied', 'error');
+            }
+        }
+
+        async function shortenLink() {
+            const urlInput = document.getElementById('longUrl');
+            const url = urlInput?.value.trim();
+
+            if (!url) {
+                showToast('Please enter a URL', 'error');
+                return;
+            }
+
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                showToast('URL must start with http:// or https://', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('shortenBtn');
+            const originalBtnText = btn.innerHTML;
+            
+            // UI Loading State
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Shortening...';
+
+            try {
+                const response = await fetch(TINYURL_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${TINYURL_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        domain: 'tinyurl.com' // Optional: defaults to tinyurl.com
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.data && data.data.tiny_url) {
+                    // Success
+                    const shortUrl = data.data.tiny_url;
+                    document.getElementById('shortUrlDisplay').value = shortUrl;
+                    document.getElementById('shortenResult').classList.remove('hidden');
+                    showToast('URL Shortened successfully!', 'success');
+                } else {
+                    throw new Error(data.errors ? data.errors[0].message : 'Failed to shorten URL');
+                }
+
+            } catch (error) {
+                console.error(error);
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                // Reset UI
+                btn.disabled = false;
+                btn.innerHTML = originalBtnText;
+            }
+        }
+
+        function copyShortUrl() {
+            const copyText = document.getElementById("shortUrlDisplay");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value).then(() => {
+                showToast('Copied to clipboard!', 'success');
+            });
+        }
+
+        function testShortUrl() {
+            const url = document.getElementById("shortUrlDisplay").value;
+            if (url) window.open(url, '_blank');
+        }
+
+        // ==================== HELP ====================
+        function showHelp() {
+            alert('NEXORA X Help:\n\nVoice Studio:\n- Enter text and click Speak\n- Choose from multiple voices\n- Apply effects like Robot, Whisper\n- Record and download audio\n\nAI Logo Maker:\n- Enter brand name\n- Select style and industry\n- Generate up to 5 logos per day\n\nLink Shortener:\n- Enter long URL\n- Get a tinyurl link instantly\n- Copy and share\n\nAll data is saved locally in your browser.');
+        }
+
+        // ==================== AI LOGO GENERATOR ====================
+        function initLogoSystem() {
+            checkAndResetDailyLimit();
+            updateLimitDisplay();
+        }
+
+        function checkAndResetDailyLimit() {
+            const today = new Date().toDateString();
+            if (logoUsage.lastDate !== today) {
+                logoUsage.daily = 0;
+                logoUsage.lastDate = today;
+                saveLogoUsage();
+            }
+        }
+
+        function saveLogoUsage() {
+            localStorage.setItem('nexora_logo_usage', JSON.stringify(logoUsage));
+        }
+
+        function updateLimitDisplay() {
+            checkAndResetDailyLimit();
+            const remaining = DAILY_LIMIT - logoUsage.daily;
+
+            ['limitText', 'limitText2'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = remaining + '/' + DAILY_LIMIT;
+            });
+
+            const indicator = document.getElementById('limitIndicator');
+            if (indicator) {
+                if (remaining <= 0) indicator.className = 'limit-badge limit-danger hidden text-xs';
+                else if (remaining <= 2) indicator.className = 'limit-badge limit-warning text-xs';
+                else indicator.className = 'limit-badge limit-ok text-xs';
+                indicator.classList.remove('hidden');
+            }
+        }
+
+        function selectStyle(element) {
+            document.querySelectorAll('.logo-style-card').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedStyle = element.dataset.style;
+        }
+
+        function addPrompt(text) {
+            const prompt = document.getElementById('logoPrompt');
+            if (prompt) {
+                if (prompt.value) prompt.value += ', ' + text;
+                else prompt.value = text;
+            }
+        }
+
+        function buildLogoPrompt() {
+            const brandName = document.getElementById('brandName')?.value.trim();
+            const tagline = document.getElementById('brandTagline')?.value.trim();
+            const industry = document.getElementById('brandIndustry')?.value;
+            const customPrompt = document.getElementById('logoPrompt')?.value.trim();
+
+            if (!brandName) { showToast('Enter brand name', 'error'); return null; }
+
+            let prompt = 'Professional logo design for "' + brandName + '"';
+            if (tagline) prompt += ', tagline: "' + tagline + '"';
+
+            const styleModifiers = {
+                'modern': 'modern, sleek, contemporary, clean lines',
+                'minimal': 'minimalist, simple, clean, elegant',
+                'tech': 'futuristic, digital, technology, neon',
+                'luxury': 'luxury, premium, gold accents, elegant',
+                'playful': 'playful, fun, colorful, creative',
+                'professional': 'professional, corporate, trustworthy'
+            };
+            prompt += ', ' + styleModifiers[selectedStyle];
+
+            const industryContexts = {
+                'technology': 'tech company, software, innovation',
+                'food': 'restaurant, food, culinary',
+                'fashion': 'fashion, style, clothing',
+                'health': 'healthcare, medical, wellness',
+                'education': 'education, learning, knowledge',
+                'finance': 'finance, banking, investment',
+                'sports': 'sports, fitness, athletic',
+                'music': 'music, audio, entertainment',
+                'travel': 'travel, adventure, journey',
+                'other': 'business, company, brand'
+            };
+            prompt += ', ' + industryContexts[industry || 'other'];
+            if (customPrompt) prompt += ', ' + customPrompt;
+            prompt += ', high quality, vector style, logo design, centered, isolated on white background, crisp edges';
+
+            return prompt;
+        }
+
+        async function generateLogo() {
+            checkAndResetDailyLimit();
+
+            if (logoUsage.daily >= DAILY_LIMIT) {
+                showToast('Daily limit reached!', 'error');
+                return;
+            }
+
+            if (isGenerating) { showToast('Please wait...', 'warning'); return; }
+
+            const prompt = buildLogoPrompt();
+            if (!prompt) return;
+
+            isGenerating = true;
+            const btn = document.getElementById('logoGenerateBtn');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating...'; }
+
+            const preview = document.getElementById('logoPreview');
+            if (preview) {
+                preview.classList.add('loading');
+                preview.innerHTML = '<div class="text-center text-cyan-200/50 px-4"><i class="fas fa-magic text-3xl mb-2 animate-pulse"></i><p class="text-sm">Creating logo...</p><p class="text-xs opacity-70">10-30 seconds</p></div>';
+            }
+
+            try {
+                const response = await fetch('https://api.together.xyz/v1/images/generations', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + LOGO_API_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'black-forest-labs/FLUX.1-schnell',
+                        prompt: prompt,
+                        width: 1024,
+                        height: 1024,
+                        steps: 4,
+                        n: 1,
+                        response_format: 'url'
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error?.message || 'API Error: ' + response.status);
+                }
+
+                const data = await response.json();
+
+                if (data.data && data.data[0] && data.data[0].url) {
+                    const imageUrl = data.data[0].url;
+                    currentLogoUrl = imageUrl;
+
+                    logoUsage.daily++;
+                    logoUsage.total++;
+                    saveLogoUsage();
+
+                    if (preview) {
+                        preview.classList.remove('loading');
+                        preview.innerHTML = '<img src="' + imageUrl + '" alt="Logo" class="max-w-full max-h-[220px] md:max-h-[280px] rounded-xl shadow-2xl">';
+                    }
+                    const actions = document.getElementById('logoActions');
+                    if (actions) actions.classList.remove('hidden');
+
+                    const logoItem = {
+                        id: Date.now(),
+                        brandName: document.getElementById('brandName')?.value || 'Logo',
+                        tagline: document.getElementById('brandTagline')?.value || '',
+                        style: selectedStyle,
+                        industry: document.getElementById('brandIndustry')?.value || 'other',
+                        prompt: prompt,
+                        url: imageUrl,
+                        date: new Date().toLocaleString()
+                    };
+
+                    logoHistory.unshift(logoItem);
+                    if (logoHistory.length > 20) logoHistory.pop();
+                    localStorage.setItem('nexora_logo_history', JSON.stringify(logoHistory));
+
+                    updateLimitDisplay();
+                    showToast('Logo generated!', 'success');
+                } else {
+                    throw new Error('No image URL');
+                }
+
+            } catch (error) {
+                console.error('Logo error:', error);
+                if (preview) {
+                    preview.classList.remove('loading');
+                    preview.innerHTML = '<div class="text-center text-red-400/70 px-4"><i class="fas fa-exclamation-circle text-3xl mb-2"></i><p class="text-sm">Failed</p><p class="text-xs">' + error.message + '</p></div>';
+                }
+                showToast('Failed: ' + error.message, 'error');
+            } finally {
+                isGenerating = false;
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-wand-magic-sparkles mr-2"></i> Generate Logo'; }
+            }
+        }
+
+        function regenerateLogo() { generateLogo(); }
+
+        function downloadLogo() {
+            if (!currentLogoUrl) { showToast('No logo', 'error'); return; }
+            const brandName = document.getElementById('brandName')?.value || 'logo';
+            const a = document.createElement('a');
+            a.href = currentLogoUrl;
+            a.download = brandName.toLowerCase().replace(/\s+/g, '-') + '-logo.png';
+            a.target = '_blank';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            showToast('Download started!', 'success');
+        }
+
+        // ==================== INIT ====================
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
