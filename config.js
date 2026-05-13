@@ -12,10 +12,10 @@ module.exports = {
     NEWSLETTER_MESSAGE_ID: '428',
     OTP_EXPIRY: 300000,
     NEWS_JSON_URL: '',
-    BOT_NAME: '𝙽𝙴𝚃𝙷𝚄𝚆𝙷-𝚇𝙼𝙳-𝙼𝙸𝙽𝙸-𝙱𝙾𝚃-𝚅1 📌',
+    BOT_NAME: '𝚒𝚜𝚊𝚗𝚔𝚊-𝚇𝙼𝙳-𝙼𝙸𝙽𝙸-𝙱𝙾𝚃-𝚅1 📌',
     OWNER_NAME: '𝕹𝕰𝕿𝕳𝖀𝖂𝕳',
-    OWNER_NUMBER: '94785316830',
+    OWNER_NUMBER: '94763353368',
     BOT_VERSION: '1.0.0',
-    BOT_FOOTER: '> © ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɴᴇᴛʜᴜᴡʜ xᴍᴅ 🎭',
+    BOT_FOOTER: '> © ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɪꜱᴀɴᴋᴀ xᴍᴅ 🎭',
     CHANNEL_LINK: 'https://whatsapp.com/channel/0029Vb6gcq74NVij8LWJKy1D,
 };
