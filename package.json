@@ -4,15 +4,15 @@
   "description": "A WhatsApp bot created using Node.js",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start index.js --deep-monitoring --attach --name QUEEN-NELUMI-MD",
-    "stop": "pm2 stop QUEEN-NELUMI-MD",
-    "restart": "pm2 restart QUEEN-NELUMI-MD"
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": "18.x"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "npm:baileys-mod",
     "@adiwajshing/keyed-db": "^0.2.4",
     "pino": "^9.6.0",
-    "pm2": "^5.4.3",
     "util": "^0.12.4",
     "express": "latest",
     "axios": "^1.2.5",
@@ -25,16 +25,14 @@
     "qrcode-terminal": "^0.12.0",
     "api-dylux": "1.8.5",
     "sqlite3": "latest",
-    "node-cache":"latest",
+    "node-cache": "latest",
     "request": "latest",
-    "child_process": "1.0.2",
     "cheerio": "1.0.0-rc.12",
     "file-type": "16.5.3",
     "form-data": "^4.0.2",
     "stream": "^0.0.3",
     "crypto": "latest",
-
-      "jimp": "latest",
+    "jimp": "latest",
     "sequelize": "^6.37.5",
     "buffer": "6.0.3",
     "awesome-phonenumber": "6.2.0",
